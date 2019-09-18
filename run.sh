@@ -1,28 +1,33 @@
 #!/bin/bash
 
-#inputxml=semi-leptonic_old.xml
-#inputxml=semi-leptonic_new_large.xml
-inputxml=semi-leptonic_new_small.xml
+inputxml=QQbarProcessor.xml
 
-###======= 500 GeV =======
+# small or large
+model=l5
+#model=s5
 
-##=====new 6f_ttbar samples
-#6f_ttbar/yyxylv.eL.pR
-#dirin=/hsm/ilc/grid/storm/prod/ilc/mc-dbd/ild/dst/500-TDR_ws/6f_ttbar/ILD_o1_v05/v01-16-p05_500/
+gearxml=gear_ILD_${model}_v02.xml
 
-##===== DBD sample =====##
-#dirin=/hsm/ilc/grid/storm/prod/ilc/mc-dbd/ild/dst-merged/500-TDR_ws/6f_ttbar/ILD_o1_v05/v01-16-p05_500/
+# type isolated lepton
+#isolep=electron
+isolep=muon
+#isolep=tau
+#isolep=muon_tau
 
-##===== New sample (large detector) =====##
-#dirin=/hsm/ilc/grid/storm/prod/ilc/mc-opt-3/ild/dst-merged/500-TDR_ws/6f_ttbar/ILD_l5_o1_v02/v02-00-01/
+##===== New sample (large, new vertexing) =====##
 
-##===== New sample (small detector) =====##
-dirin=/hsm/ilc/grid/storm/prod/ilc/mc-opt-3/ild/dst-merged/500-TDR_ws/6f_ttbar/ILD_s5_o1_v02/v02-00-01/
+dirin=/hsm/ilc/users/yokugawa/preset_N_run/${model}/${isolep}/slcio/
 
-processID=$1
-#nfile=-1
-nfile=12
+# electron sample
+#dirin=/hsm/ilc/users/yonamine/physics/lcfiplus/vertexing_6f_ttbar/
+
+# muon and tau sample
+#dirin=/home/ilc/yonamine/work/Yuichi/test20190328/run/slcio/
+
+nfile=-1
+#nfile=12
 #nfile=1
 #nperjob=50
-nperjob=1
-./submit2 $dirin $processID 1 $nfile $nperjob $inputxml
+
+nperjob=3
+./submit2 $dirin 1 $nfile $nperjob $inputxml $gearxml $isolep $model

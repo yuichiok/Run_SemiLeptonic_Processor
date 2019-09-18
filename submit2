@@ -1,22 +1,24 @@
 #!/bin/sh
 
 data_input=$1
-id=$2
-nfirst=$3
-nlast=$4
-nrun=$5
-inputxml=$6
+nfirst=$2
+nlast=$3
+nrun=$4
+inputxml=$5
+gearxml=$6
+isolep=$7
+model=$8
 
-flist=list/I${id}.list
+flist=list/${isolep}_${model}.list
 if [ ! -f ${flist} ] ; then
-    `find ${data_input} -name *I${id}*.slcio | sort > ${flist}`
+    `find ${data_input} -name *.slcio | sort > ${flist}`
 else
 	rm -rf ${flist}
-	`find ${data_input} -name *I${id}*.slcio | sort > ${flist}`
+    `find ${data_input} -name *.slcio | sort > ${flist}`
 fi
 
 nf=`more ${flist} | wc -l`
-echo "number of files for process I${id}: " ${nf}
+echo "number of files for process: " ${nf}
 
 if [ ${nlast} -le 0 ] || [ ${nlast} -ge ${nf} ] ; then
     nlast=${nf}
@@ -32,9 +34,9 @@ for seq in $seqlist; do
     else
 	nrun1=$nlast
     fi
-    echo ${id} $nrun0 $nrun1 $nrun $njobs
-    log=./sublog/${id}"_"`printf %03d $seq`.log
-    bsub -q s -J "ana"`printf %03d $seq` -o $log "./runMarlin2 ${flist} $nrun0 $nrun1 $inputxml"
+    echo ${isolep} ${model} $nrun0 $nrun1 $nrun $njobs
+    log=./sublog/${isolep}"_"${model}"_"`printf %03d $seq`.log
+    bsub -q s -J "ana"`printf %03d $seq` -o $log "./runMarlin2 ${flist} $nrun0 $nrun1 $inputxml $gearxml $isolep $model"
 #    ./runMarlin2 ${flist} $nrun0 $nrun1 $inputxml
 #    sleep 5
 done
